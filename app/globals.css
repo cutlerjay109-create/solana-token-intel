@@ -1,26 +1,83 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #fafaf9;
+  color: #2c2c2a;
+  transition: background 0.2s, color 0.2s;
+}
+
+body.dark { background: #141413; color: #e8e6df; }
+
+body.dark div,
+body.dark span,
+body.dark p,
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark label { color: #e8e6df; }
+
+body.dark [style*="color: #2c2c2a"] { color: #e8e6df !important; }
+body.dark [style*="color: #444441"] { color: #e8e6df !important; }
+body.dark [style*="color: #888780"] { color: #9c9a92 !important; }
+body.dark [style*="color: #B4B2A9"] { color: #6a6a68 !important; }
+body.dark [style*="color: #3B6D11"] { color: #7bc96f !important; }
+body.dark [style*="color: #854F0B"] { color: #e8a44a !important; }
+body.dark [style*="color: #A32D2D"] { color: #f47c7c !important; }
+body.dark [style*="color: #185FA5"] { color: #5ba3e8 !important; }
+body.dark [style*="color: #0C447C"] { color: #5ba3e8 !important; }
+
+body.dark [style*="background: #ffffff"] { background: #1e1e1c !important; }
+body.dark [style*="background:#ffffff"]  { background: #1e1e1c !important; }
+body.dark [style*="background: #fafaf9"] { background: #141413 !important; }
+body.dark [style*="background: #F8F8F7"] { background: #2a2a28 !important; }
+body.dark [style*="background: #F1EFE8"] { background: #2a2a28 !important; }
+body.dark [style*="background: #D3D1C7"] { background: #3a3a38 !important; }
+body.dark [style*="background: #EAF3DE"] { background: #1a2e14 !important; }
+body.dark [style*="background: #FAEEDA"] { background: #2e2210 !important; }
+body.dark [style*="background: #FCEBEB"] { background: #2e1414 !important; }
+body.dark [style*="background: #E6F1FB"] { background: #0f2035 !important; }
+
+body.dark [style*="border: 0.5px solid #D3D1C7"]        { border-color: #3a3a38 !important; }
+body.dark [style*="border-bottom: 0.5px solid #D3D1C7"] { border-color: #3a3a38 !important; }
+body.dark [style*="border-top: 0.5px solid #D3D1C7"]    { border-color: #3a3a38 !important; }
+body.dark [style*="border-bottom: 0.5px solid #F1EFE8"] { border-color: #2a2a28 !important; }
+
+body.dark input,
+body.dark select,
+body.dark textarea {
+  background: #1e1e1c !important;
+  color: #e8e6df !important;
+  border-color: #3a3a38 !important;
+}
+body.dark input::placeholder { color: #6a6a68 !important; }
+
+body.dark button { color: #c8c6bf !important; border-color: #3a3a38 !important; }
+body.dark button:hover { background: #2a2a28 !important; }
+
+body.dark .card { background: #1e1e1c !important; border-color: #3a3a38 !important; color: #e8e6df !important; }
+body.dark .stat-box { background: #2a2a28 !important; }
+body.dark .stat-box * { color: #e8e6df !important; }
+body.dark .search-dropdown { background: #1e1e1c !important; border-color: #3a3a38 !important; }
+body.dark .search-row { background: #1e1e1c !important; color: #e8e6df !important; }
+body.dark .search-row:hover { background: #2a2a28 !important; }
+body.dark .search-row * { color: #e8e6df !important; }
+body.dark .table-row-even { background: #1e1e1c !important; }
+body.dark .table-row-odd  { background: #252523 !important; }
+body.dark .modal-card { background: #1e1e1c !important; border-color: #3a3a38 !important; }
+body.dark .modal-card * { color: #e8e6df !important; }
+body.dark .score-bg { background: #3a3a38 !important; }
+body.dark .row-hover:hover { background: #2a2a28 !important; }
+body.dark footer { border-color: #3a3a38 !important; }
+body.dark footer * { color: #9c9a92 !important; }
+body.dark footer a { color: #5ba3e8 !important; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes xglow {
+  0%, 100% { box-shadow: 0 0 8px rgba(29,161,242,0.8), 0 0 16px rgba(123,47,190,0.5); }
+  50%       { box-shadow: 0 0 8px rgba(225,48,108,0.8), 0 0 16px rgba(29,161,242,0.5); }
 }
