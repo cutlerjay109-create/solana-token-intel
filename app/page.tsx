@@ -281,16 +281,16 @@ export default function Home() {
 
   return (
     <>
-    <div style={{ width: "100%", height: 220, overflow: "hidden" }}>
+    <div style={{ width: "100%", height: "clamp(120px, 25vw, 220px)", overflow: "hidden" }}>
       <img src="/banner.jpeg" alt="banner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", display: "block" }} />
     </div>
-    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 20px", fontFamily: "-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif" }}>
+    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "16px 12px", fontFamily: "-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif" }}>
 
       {/* Header */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "center",
-        marginBottom: 24, paddingBottom: 20, borderBottom: "0.5px solid #D3D1C7",
-        flexWrap: "wrap", gap: 12,
+        marginBottom: 16, paddingBottom: 16, borderBottom: "0.5px solid #D3D1C7",
+        flexWrap: "wrap", gap: 10,
       }}>
         {/* Left — brand */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
