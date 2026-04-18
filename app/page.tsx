@@ -423,7 +423,7 @@ export default function Home() {
                 <option value="change">Price change</option>
               </select>
             )}
-            <button onClick={doRefresh} disabled={loading} style={{
+            <button onClick={() => doRefresh(false)} disabled={loading} style={{
               padding: "6px 14px", fontSize: 13, cursor: loading ? "not-allowed" : "pointer",
               border: "0.5px solid #D3D1C7", borderRadius: 8,
               background: loading ? "#F1EFE8" : "transparent",

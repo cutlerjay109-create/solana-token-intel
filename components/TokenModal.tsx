@@ -215,8 +215,7 @@ export default function TokenModal({ token, onClose }: { token: any; onClose: ()
           <div style={{ fontSize: 12, color: "#888780", marginBottom: 8, fontWeight: 500 }}>Token data</div>
           <div style={{ border: "0.5px solid #D3D1C7", borderRadius: 10, overflow: "hidden" }}>
             {rows.map(({ label: rl, value, color }, i) => (
-              <div key={rl} style={{ display: "flex", justifyContent: "space-between", padding: "9px 14px",
-                className: i % 2 === 0 ? "table-row-even" : "table-row-odd",
+              <div key={rl} className={i % 2 === 0 ? "table-row-even" : "table-row-odd"} style={{ display: "flex", justifyContent: "space-between", padding: "9px 14px",
                 background: i % 2 === 0 ? "#ffffff" : "#F1EFE8", fontSize: 13 }}>
                 <span style={{ color: "#888780" }}>{rl}</span>
                 <span style={{ fontWeight: 500, color: color ?? "#2c2c2a" }}>{value}</span>
