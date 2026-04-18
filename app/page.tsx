@@ -33,6 +33,7 @@ const TAB_DESC: Record<Tab, string> = {
   meme:     "Low mcap, high momentum meme tokens ",
   smart:    "Boosted tokens with smart money backing ",
   defi:     "Highest liquidity DeFi pairs ",
+  watchlist: "Your saved tokens",
 };
 
 // Auto-refresh intervals per tab (ms), 0 = manual only
