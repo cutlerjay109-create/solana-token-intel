@@ -21,8 +21,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/favicon.jpg" />
+        <style dangerouslySetInnerHTML={{ __html: darkMode
+          ? `html,body{background:#141413!important;color:#e8e6df!important}`
+          : `html,body{background:#fafaf9!important;color:#2c2c2a!important}`
+        }} />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body suppressHydrationWarning className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
