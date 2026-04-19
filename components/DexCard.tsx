@@ -192,7 +192,7 @@ export default function DexCard({pair,onClick,starButton,dark=false}:{pair:DexPa
             <span style={{color:green}}>Buy {buys.toLocaleString()}</span>
             <span style={{color:red}}>Sell {sells.toLocaleString()}</span>
           </div>
-          <div style={{height:4,background:redBg,borderRadius:4,overflow:"hidden"}}>
+          <div style={{height:5,background:dark?"#5c2020":"#F5C2C2",borderRadius:4,overflow:"hidden"}}>
             <div style={{height:"100%",width:buyPct+"%",background:green,borderRadius:4}}/>
           </div>
         </div>
