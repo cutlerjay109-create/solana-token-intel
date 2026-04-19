@@ -17,16 +17,22 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const darkMode = cookieStore.get("darkMode")?.value === "true";
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased${darkMode ? " dark" : ""}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased${darkMode ? " dark" : ""}`}
+    >
       <head>
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/favicon.jpg" />
-        <style dangerouslySetInnerHTML={{ __html: darkMode
-          ? `html,body{background:#141413!important;color:#e8e6df!important}`
-          : `html,body{background:#fafaf9!important;color:#2c2c2a!important}`
+        <style dangerouslySetInnerHTML={{ __html:
+          darkMode
+            ? `html,body{background:#141413!important;color:#e8e6df!important}`
+            : `html,body{background:#fafaf9!important;color:#2c2c2a!important}`
         }} />
       </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-col">{children}</body>
+      <body suppressHydrationWarning className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }

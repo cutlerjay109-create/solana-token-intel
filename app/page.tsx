@@ -300,6 +300,11 @@ export default function Home() {
     localStorage.setItem("darkMode", String(darkMode));
   }, [darkMode]);
 
+  useEffect(() => {
+    const saved = document.cookie.includes("darkMode=true") || localStorage.getItem("darkMode") === "true";
+    if (saved) setDarkMode(true);
+  }, []);
+
   const doRefresh = useCallback((background = false) => {
     if (tab === "trending") fetchTrending(background);
     else fetchDex(tab, dexFilter, background);

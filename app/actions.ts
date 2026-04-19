@@ -6,5 +6,6 @@ export async function setDarkModeCookie(dark: boolean) {
   cookieStore.set("darkMode", dark ? "true" : "false", {
     maxAge: 60 * 60 * 24 * 365,
     path: "/",
+    sameSite: "lax",
   });
 }
