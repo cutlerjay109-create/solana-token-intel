@@ -20,17 +20,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased${darkMode ? " dark" : ""}`}
+      style={{ background: darkMode ? "#141413" : "#fafaf9", colorScheme: darkMode ? "dark" : "light" }}
     >
       <head>
         <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/favicon.jpg" />
-        <style dangerouslySetInnerHTML={{ __html:
-          darkMode
-            ? `html,body{background:#141413!important;color:#e8e6df!important}`
-            : `html,body{background:#fafaf9!important;color:#2c2c2a!important}`
+        <style dangerouslySetInnerHTML={{ __html: darkMode
+          ? `html,body{background:#141413!important;color:#e8e6df}html.dark{background:#141413!important}`
+          : `html,body{background:#fafaf9!important;color:#2c2c2a}`
         }} />
       </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-col">
+      <body suppressHydrationWarning style={{ background: darkMode ? "#141413" : "#fafaf9" }} className="min-h-full flex flex-col">
         {children}
       </body>
     </html>

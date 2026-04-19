@@ -235,3 +235,12 @@ main {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Unified theme switch — all elements transition together in sync */
+html, body, .card, .stat-box, .modal-card, .search-dropdown,
+[style*="background: #ffffff"],
+[style*="background: #F1EFE8"],
+[style*="background: #F8F8F7"],
+[style*="background: #fafaf9"] {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+}
