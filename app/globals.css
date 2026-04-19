@@ -245,16 +245,18 @@ html, body, .card, .stat-box, .modal-card, .search-dropdown,
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
 }
 
-/* Cards transition smoothly so background changes first */
+/* All backgrounds and borders change together for smooth sync */
 .card,
 [style*="background: #ffffff"],
 [style*="background:#ffffff"],
 [style*="background: #F1EFE8"],
-[style*="background: #F8F8F7"] {
-  transition: background-color 0.3s ease 0.05s, border-color 0.3s ease 0.05s !important;
+[style*="background: #F8F8F7"],
+[style*="background: #1e1e1c"],
+[style*="background: #2a2a28"],
+[style*="background: #252523"] {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease !important;
 }
 
-/* Body and html have NO transition — change instantly */
 html, body {
-  transition: none !important;
+  transition: background-color 0.25s ease, color 0.25s ease !important;
 }
