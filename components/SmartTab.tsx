@@ -20,7 +20,18 @@ function fmtPrice(s?: string) {
   return `$${n.toFixed(8)}`;
 }
 
-export default function SmartTab({ pairs, onSelect }: { pairs: any[]; onSelect: (p: any) => void }) {
+export default function SmartTab({ pairs, onSelect, dark = false }: { pairs: any[]; onSelect: (p: any) => void; dark?: boolean }) {
+  const bg     = dark ? "#1e1e1c" : "#ffffff";
+  const bg2    = dark ? "#2a2a28" : "#F1EFE8";
+  const border = dark ? "#3a3a38" : "#D3D1C7";
+  const text   = dark ? "#e8e6df" : "#2c2c2a";
+  const text2  = dark ? "#9c9a92" : "#888780";
+  const text3  = dark ? "#6a6a68" : "#B4B2A9";
+  const blue   = dark ? "#5ba3e8" : "#185FA5";
+  const blueBg = dark ? "#0f2035" : "#E6F1FB";
+  const green  = dark ? "#7bc96f" : "#3B6D11";
+  const amber  = dark ? "#e8a44a" : "#854F0B";
+  const red    = dark ? "#f47c7c" : "#A32D2D";
   const [period, setPeriod] = useState<Period>("1D");
 
   // Map period to available txns key
@@ -93,7 +104,7 @@ export default function SmartTab({ pairs, onSelect }: { pairs: any[]; onSelect: 
                 </div>
               )}
               <div>
-                <div style={{ fontSize: 13, fontWeight: 500, color: "#2c2c2a" }}>{symbol}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: text }}>{symbol}</div>
                 <div style={{ fontSize: 11, color: "#888780" }}>{name.slice(0, 20)}</div>
               </div>
             </div>
@@ -107,7 +118,7 @@ export default function SmartTab({ pairs, onSelect }: { pairs: any[]; onSelect: 
             </div>
 
             {/* Price */}
-            <div style={{ textAlign: "right", fontSize: 12, color: "#2c2c2a" }}>{fmtPrice(pair.priceUsd)}</div>
+            <div style={{ textAlign: "right", fontSize: 12, color: text }}>{fmtPrice(pair.priceUsd)}</div>
 
             {/* Trend arrow */}
             <div style={{ textAlign: "right" }}>

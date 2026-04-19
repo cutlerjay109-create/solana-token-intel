@@ -47,7 +47,19 @@ function fmtPrice(s?:string){
   return "$"+n.toFixed(8);
 }
 
-export default function TrendingDexTab({onSelect}:{onSelect:(p:any)=>void}){
+export default function TrendingDexTab({onSelect, dark=false}:{onSelect:(p:any)=>void;dark?:boolean}){
+  const bg     = dark ? "#1e1e1c" : "#ffffff";
+  const bg2    = dark ? "#2a2a28" : "#F1EFE8";
+  const border = dark ? "#3a3a38" : "#D3D1C7";
+  const text   = dark ? "#e8e6df" : "#2c2c2a";
+  const text2  = dark ? "#9c9a92" : "#888780";
+  const text3  = dark ? "#6a6a68" : "#B4B2A9";
+  const blue   = dark ? "#5ba3e8" : "#185FA5";
+  const blueBg = dark ? "#0f2035" : "#E6F1FB";
+  const blueDark = dark ? "#85B7EB" : "#0C447C";
+  const green  = dark ? "#7bc96f" : "#3B6D11";
+  const red    = dark ? "#f47c7c" : "#A32D2D";
+
   const [pairs,setPairs]     = useState<any[]>([]);
   const [mode,setMode]       = useState<Mode>("gainers");
   const [period,setPeriod]   = useState<Period>("h24");
@@ -84,41 +96,41 @@ export default function TrendingDexTab({onSelect}:{onSelect:(p:any)=>void}){
         {MODES.map(m=>(
           <button key={m.key} onClick={()=>handleMode(m.key)} style={{
             padding:"7px 18px",fontSize:13,cursor:"pointer",borderRadius:8,
-            border:mode===m.key?"2px solid #185FA5":"0.5px solid #D3D1C7",
-            background:mode===m.key?"#E6F1FB":"transparent",
-            color:mode===m.key?"#0C447C":"#888780",fontWeight:mode===m.key?500:400,
+            border:mode===m.key?`2px solid ${blue}`:`0.5px solid ${border}`,
+            background:mode===m.key?blueBg:"transparent",
+            color:mode===m.key?blueDark:text2,fontWeight:mode===m.key?500:400,
           }}>{m.icon} {m.label}</button>
         ))}
       </div>
 
       <div style={{display:"flex",gap:6,marginBottom:16,alignItems:"center"}}>
-        <span style={{fontSize:12,color:"#888780",marginRight:4}}>Period:</span>
-        <div style={{display:"flex",border:"0.5px solid #D3D1C7",borderRadius:8,overflow:"hidden"}}>
+        <span style={{fontSize:12,color:text2,marginRight:4}}>Period:</span>
+        <div style={{display:"flex",border:`0.5px solid ${border}`,borderRadius:8,overflow:"hidden"}}>
           {activePeriods.map(p=>(
             <button key={p.key} onClick={()=>setPeriod(p.key as Period)} style={{
               padding:"5px 14px",fontSize:12,cursor:"pointer",border:"none",
-              background:period===p.key?"#E6F1FB":"transparent",
-              color:period===p.key?"#0C447C":"#888780",fontWeight:period===p.key?500:400,
+              background:period===p.key?blueBg:"transparent",
+              color:period===p.key?blueDark:text2,fontWeight:period===p.key?500:400,
             }}>{p.label}</button>
           ))}
         </div>
-        <span style={{fontSize:12,color:"#B4B2A9",marginLeft:8}}>{loading?"Loading...":pairs.length+" pairs"}</span>
-        <button onClick={()=>doFetch(mode,period)} disabled={loading} style={{marginLeft:"auto",padding:"5px 12px",fontSize:12,cursor:"pointer",border:"0.5px solid #D3D1C7",borderRadius:8,background:"transparent",color:"#888780"}}>↻</button>
+        <span style={{fontSize:12,color:text3,marginLeft:8}}>{loading?"Loading...":pairs.length+" pairs"}</span>
+        <button onClick={()=>doFetch(mode,period)} disabled={loading} style={{marginLeft:"auto",padding:"5px 12px",fontSize:12,cursor:"pointer",border:`0.5px solid ${border}`,borderRadius:8,background:"transparent",color:text2}}>↻</button>
       </div>
 
       {loading?(
-        <div style={{textAlign:"center",padding:"60px 0",color:"#888780",fontSize:14}}>Loading...</div>
+        <div style={{textAlign:"center",padding:"60px 0",color:text2,fontSize:14}}>Loading...</div>
       ):pairs.length===0?(
-        <div style={{textAlign:"center",padding:"60px 0",color:"#888780",fontSize:14}}>No data for this period. Try a longer time window.</div>
+        <div style={{textAlign:"center",padding:"60px 0",color:text2,fontSize:14}}>No data for this period. Try a longer time window.</div>
       ):mode==="newest"?(
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill, minmax(300px, 1fr))",gap:14}}>
           {pairs.map((pair:any,i:number)=>(
-            <DexCard key={i} pair={pair} onClick={()=>onSelect({...pair,address:pair.baseToken?.address})}/>
+            <DexCard dark={dark} key={i} pair={pair} onClick={()=>onSelect({...pair,address:pair.baseToken?.address})}/>
           ))}
         </div>
       ):(
         <div>
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",gap:8,padding:"8px 12px",fontSize:11,color:"#888780",fontWeight:500,borderBottom:"0.5px solid #D3D1C7",marginBottom:4}}>
+          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",gap:8,padding:"8px 12px",fontSize:11,color:text2,fontWeight:500,borderBottom:"0.5px solid #D3D1C7",marginBottom:4}}>
             <div>TOKEN</div>
             <div style={{textAlign:"right"}}>PRICE</div>
             <div style={{textAlign:"right"}}>{mode==="gainers"?"CHG "+period.toUpperCase():mode==="volume"?"VOL "+period.toUpperCase():"TXNS "+period.toUpperCase()}</div>
@@ -143,28 +155,28 @@ export default function TrendingDexTab({onSelect}:{onSelect:(p:any)=>void}){
                 onMouseLeave={e=>(e.currentTarget.style.background="transparent")}
               >
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontSize:12,color:"#B4B2A9",minWidth:20}}>{i+1}</span>
+                  <span style={{fontSize:12,color:text3,minWidth:20}}>{i+1}</span>
                   {imageUrl?(
                     <img src={imageUrl} width={28} height={28} style={{borderRadius:"50%",flexShrink:0}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}}/>
                   ):(
-                    <div style={{width:28,height:28,borderRadius:"50%",background:"#E6F1FB",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:500,color:"#185FA5"}}>
+                    <div style={{width:28,height:28,borderRadius:"50%",background:blueBg,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:500,color:blue}}>
                       {symbol.slice(0,2).toUpperCase()}
                     </div>
                   )}
                   <div style={{minWidth:0}}>
-                    <div style={{fontSize:13,fontWeight:500,color:"#2c2c2a"}}>{symbol}</div>
-                    <div style={{fontSize:11,color:"#888780",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name.slice(0,20)}</div>
+                    <div style={{fontSize:13,fontWeight:500,color:text}}>{symbol}</div>
+                    <div style={{fontSize:11,color:text2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{name.slice(0,20)}</div>
                   </div>
                 </div>
-                <div style={{textAlign:"right",fontSize:12,color:"#2c2c2a"}}>{fmtPrice(pair.priceUsd)}</div>
+                <div style={{textAlign:"right",fontSize:12,color:text}}>{fmtPrice(pair.priceUsd)}</div>
                 <div style={{textAlign:"right"}}>
                   {mode==="gainers"&&<span style={{fontSize:13,fontWeight:500,color:isBull?"#3B6D11":"#A32D2D"}}>{isBull?"+":""}{Math.abs(chg).toFixed(1)}%</span>}
-                  {mode==="volume"&&<span style={{fontSize:13,fontWeight:500,color:"#2c2c2a"}}>{fmt(vol)}</span>}
-                  {mode==="txns"&&<span style={{fontSize:13,fontWeight:500,color:"#2c2c2a"}}>{fmtNum(buys+sells)}</span>}
+                  {mode==="volume"&&<span style={{fontSize:13,fontWeight:500,color:text}}>{fmt(vol)}</span>}
+                  {mode==="txns"&&<span style={{fontSize:13,fontWeight:500,color:text}}>{fmtNum(buys+sells)}</span>}
                 </div>
-                <div style={{textAlign:"right",fontSize:12,color:"#888780"}}>{fmt(pair.liquidity?.usd)}</div>
+                <div style={{textAlign:"right",fontSize:12,color:text2}}>{fmt(pair.liquidity?.usd)}</div>
                 <div style={{textAlign:"right"}}>
-                  <div style={{fontSize:11,color:"#3B6D11",marginBottom:2}}>{buyPct}%</div>
+                  <div style={{fontSize:11,color:green,marginBottom:2}}>{buyPct}%</div>
                   <div style={{height:4,background:"#FCEBEB",borderRadius:4,overflow:"hidden"}}>
                     <div style={{height:"100%",width:buyPct+"%",background:"#639922",borderRadius:4}}/>
                   </div>

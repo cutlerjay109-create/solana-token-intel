@@ -1,4 +1,5 @@
 "use client";
+import { setDarkModeCookie } from "./actions";
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import TokenModal from "@/components/TokenModal";
@@ -8,6 +9,7 @@ import MemeTab from "@/components/MemeTab";
 import SmartTab from "@/components/SmartTab";
 import TrendingDexTab from "@/components/TrendingDexTab";
 import WatchlistTab, { useWatchlist } from "@/components/WatchlistTab";
+import AlertSettingsModal, { useAlertSettings, sendBreakoutAlert } from "@/components/AlertSettings";
 
 const ALL_TABS = ["trending", "live", "whale", "meme", "smart", "defi", "watchlist"] as const;
 type Tab = typeof ALL_TABS[number];
@@ -57,6 +59,46 @@ function timeAgo(ts?: number) {
 
 export default function Home() {
   const { watchlist, add: addToWatchlist, remove: removeFromWatchlist, has: inWatchlist } = useWatchlist();
+  const [liveWatchlist, setLiveWatchlist] = useState<any[]>([]);
+
+  // Re-fetch live prices for watchlist tokens every 30s
+  useEffect(() => {
+    const refresh = async () => {
+      if (!watchlist.length || pausedRef.current) return;
+      try {
+        const addresses = watchlist.map((t: any) => t.address).filter(Boolean).join(",");
+        if (!addresses) return;
+        const res = await fetch(`/api/dexscreener?type=batch&addresses=${addresses}`);
+        const json = await res.json();
+        const map: Record<string, any> = {};
+        const pairsArr = Array.isArray(json.data) ? json.data : Object.values(json.data || {});
+        pairsArr.forEach((p: any) => {
+          const addr = p.baseToken?.address;
+          if (addr) map[addr] = p;
+        });
+        setLiveWatchlist(watchlist.map((t: any) => {
+          const live = map[t.address];
+          if (!live) return t;
+          return {
+            ...t,
+            price: parseFloat(live.priceUsd || "0"),
+            priceUsd: live.priceUsd,
+            price24hChangePercent: live.priceChange?.h24,
+            volume24hUSD: live.volume?.h24,
+            liquidity: live.liquidity?.usd,
+            fdv: live.fdv,
+            pairData: live,
+          };
+        }));
+      } catch (e) { console.error("Watchlist refresh error:", e); }
+    };
+    refresh();
+    const iv = setInterval(refresh, 30_000);
+    return () => clearInterval(iv);
+  }, [watchlist]);
+  const { settings: alertSettings } = useAlertSettings();
+  const [showAlerts, setShowAlerts] = useState(false);
+  const alertedRef = useRef<Set<string>>(new Set());
   const [tab, setTab]                     = useState<Tab>("trending");
   const [trendView, setTrendView]           = useState<"birdeye" | "dex">("birdeye");
   const [darkMode, setDarkMode]             = useState(false);
@@ -75,6 +117,7 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching]         = useState(false);
   const [lastUpdated, setLastUpdated]     = useState<Date | null>(null);
+  const [tabUpdated, setTabUpdated]           = useState<Record<string, Date | null>>({});
   const [selected, setSelected]           = useState<any | null>(null);
   const [countdown, setCountdown]         = useState(0);
   const intervalRef = useRef<any>(null);
@@ -183,9 +226,31 @@ export default function Home() {
       setTokens(merged);
       setTotalPairs(merged.length);
       setLastUpdated(new Date());
+      setTabUpdated(prev => ({ ...prev, [tab]: new Date() }));
     } catch (e) { console.error(e); }
     finally { setLoading(false); setRefreshing(false); }
   }, []);
+
+  // Monitor tokens for breakouts — only for watched addresses
+  useEffect(() => {
+    if (!alertSettings.enabled || tokens.length === 0) return;
+    if (alertSettings.watchedAddresses.length === 0) return;
+    tokens.forEach(token => {
+      if (!alertSettings.watchedAddresses.includes(token.address)) return;
+      const chg = token.price24hChangePercent ?? 0;
+      const absChg = Math.abs(chg);
+      const dir = alertSettings.direction ?? "both";
+      const shouldAlert =
+        (dir === "both" && absChg >= alertSettings.threshold) ||
+        (dir === "up"   && chg >= alertSettings.threshold) ||
+        (dir === "down" && chg <= -alertSettings.threshold);
+      const key = token.address + Math.round(chg);
+      if (shouldAlert && !alertedRef.current.has(key)) {
+        alertedRef.current.add(key);
+        sendBreakoutAlert(alertSettings, token);
+      }
+    });
+  }, [tokens, alertSettings]);
 
   const fetchDex = useCallback(async (t: Tab, f = "all", background = false) => {
     if (background) setRefreshing(true);
@@ -198,27 +263,41 @@ export default function Home() {
       setTotalVolume(json.totalVolume || 0);
       setTotalTxns(json.totalTxns || 0);
       setLastUpdated(new Date());
+      setTabUpdated(prev => ({ ...prev, [tab]: new Date() }));
     } catch (e) { console.error(e); }
     finally { setLoading(false); setRefreshing(false); }
   }, []);
 
   useEffect(() => { pausedRef.current = paused; }, [paused]);
 
-  // Load saved dark mode preference on mount
+  // Background fetch all tabs every 60s
+  const bgIntervalRef = useRef<any>(null);
   useEffect(() => {
-    const saved = localStorage.getItem("darkMode") === "true";
-    if (saved) setDarkMode(true);
+    bgIntervalRef.current = setInterval(() => {
+      if (pausedRef.current) return;
+      // Fetch all non-active tabs in background
+      const allTabs: Tab[] = ["live", "whale", "meme", "smart", "defi"];
+      allTabs.forEach(t => {
+        if (t !== tab) fetchDex(t, "all", true);
+      });
+    }, 60_000);
+    return () => clearInterval(bgIntervalRef.current);
+  }, [tab]);
+
+  // Read initial dark mode from cookie on mount
+  useEffect(() => {
+    const saved = document.cookie.includes("darkMode=true") || localStorage.getItem("darkMode") === "true";
+    setDarkMode(saved);
   }, []);
 
-  // Apply dark mode class whenever it changes
   useEffect(() => {
     if (darkMode) {
-      document.body.classList.add("dark");
-      localStorage.setItem("darkMode", "true");
+      document.documentElement.classList.add("dark");
     } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("darkMode", "false");
+      document.documentElement.classList.remove("dark");
     }
+    setDarkModeCookie(darkMode);
+    localStorage.setItem("darkMode", String(darkMode));
   }, [darkMode]);
 
   const doRefresh = useCallback((background = false) => {
@@ -298,7 +377,7 @@ export default function Home() {
             width: 36, height: 36, borderRadius: 10, objectFit: "cover", flexShrink: 0,
           }} />
           <div>
-            <div style={{ fontSize: 17, fontWeight: 600, color: "#2c2c2a", letterSpacing: "-0.3px" }}>
+            <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: "-0.3px" }}>
               Solana Token Intel
             </div>
             <div style={{ fontSize: 12, color: "#888780", marginTop: 1, display: "flex", alignItems: "center", gap: 6 }}>
@@ -339,6 +418,17 @@ export default function Home() {
               color: darkMode ? "#f0efe8" : "#888780",
             }}>
             {darkMode ? "☀" : "☾"}
+          </button>
+          <button
+            onClick={() => setShowAlerts(true)}
+            title="Breakout alerts"
+            style={{
+              padding: "6px 12px", fontSize: 12, cursor: "pointer", borderRadius: 8,
+              border: alertSettings.enabled ? "2px solid #1D9E75" : "0.5px solid #D3D1C7",
+              background: alertSettings.enabled ? "#E1F5EE" : "transparent",
+              color: alertSettings.enabled ? "#0F6E56" : "#888780",
+            }}>
+            {alertSettings.enabled ? "🔔 On" : "🔔"}
           </button>
         </div>
       </div>
@@ -389,10 +479,10 @@ export default function Home() {
       {/* Controls row */}
       {!showSearch && tab !== "watchlist" && (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
-          <div style={{ fontSize: 13, color: "#888780" }}>
-            Showing <span style={{ fontWeight: 500, color: "#2c2c2a" }}>{isBirdeye ? visibleTokens.length : dexPairs.length}</span> tokens
-            {totalPairs > 0 && ` of ${totalPairs.toLocaleString()}`}
-            {tab === "whale" && totalTxns > 0 && <span style={{ marginLeft: 8 }}>· <span style={{ fontWeight: 500, color: "#2c2c2a" }}>{totalTxns.toLocaleString()}</span> whale txs · Total: <span style={{ fontWeight: 500, color: "#2c2c2a" }}>{fmt(totalVolume)}</span></span>}
+          <div style={{ fontSize: 13, color: darkMode ? "#9c9a92" : "#888780" }}>
+            Showing <span style={{ fontWeight: 500 }}>{isBirdeye ? visibleTokens.length : dexPairs.length}</span> of <span style={{ fontWeight: 500 }}>{isBirdeye ? tokens.length : dexPairs.length}</span> tokens
+            {tab === "whale" && totalTxns > 0 && <span style={{ marginLeft: 8 }}>· <span style={{ fontWeight: 500 }}>{totalTxns.toLocaleString()}</span> whale txs · Total: <span style={{ fontWeight: 500 }}>{fmt(totalVolume)}</span></span>}
+            {tabUpdated[tab] && <span style={{ marginLeft: 8, fontSize: 11, color: darkMode ? "#6a6a68" : "#B4B2A9" }}>· updated {tabUpdated[tab]!.toLocaleTimeString()}</span>}
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             {/* Whale / DeFi filter */}
@@ -461,7 +551,7 @@ export default function Home() {
               const addr = pair.baseToken?.address || "";
               return (
                 <DexCard
-                  key={i}
+dark={darkMode}                   key={i}
                   pair={pair}
                   onClick={() => setSelected({ ...pair, address: addr })}
                   starButton={
@@ -477,13 +567,13 @@ export default function Home() {
           </div>
         )
       ) : tab === "watchlist" ? (
-        <WatchlistTab onSelect={setSelected} />
+        <WatchlistTab onSelect={setSelected} dark={darkMode} liveTokens={liveWatchlist} />
       ) : tab === "whale" ? (
-        <WhaleTab pairs={dexPairs} onSelect={setSelected} filter={dexFilter} />
+        <WhaleTab pairs={dexPairs} onSelect={setSelected} filter={dexFilter} dark={darkMode} />
       ) : tab === "meme" ? (
-        <MemeTab onSelect={setSelected} paused={paused} />
+        <MemeTab onSelect={setSelected} paused={paused} dark={darkMode} />
       ) : tab === "smart" ? (
-        <SmartTab pairs={dexPairs} onSelect={setSelected} />
+        <SmartTab pairs={dexPairs} onSelect={setSelected} dark={darkMode} />
       ) : isBirdeye ? (
         <div>
           {/* Trending sub-tabs */}
@@ -509,7 +599,7 @@ export default function Home() {
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 14 }}>
                 {visibleTokens.map(token => (
                   <DexCard
-                    key={token.address}
+dark={darkMode}                     key={token.address}
                     pair={{ baseToken: { address: token.address, symbol: token.symbol, name: token.name }, priceUsd: String(token.price ?? 0), priceChange: { h24: token.price24hChangePercent }, volume: { h24: token.volume24hUSD }, liquidity: { usd: token.liquidity }, fdv: token.fdv ?? token.marketcap, txns: token.txns, pairCreatedAt: token.pairCreatedAt, dexId: token.dexId, info: token.info, score: token.score, label: token.label }}
                     onClick={() => setSelected(token)}
                     starButton={
@@ -524,7 +614,7 @@ export default function Home() {
               </div>
             )
           ) : (
-            <TrendingDexTab onSelect={setSelected} />
+            <TrendingDexTab onSelect={setSelected} dark={darkMode} />
           )}
         </div>
       ) : (
@@ -536,7 +626,7 @@ export default function Home() {
               const addr = pair.baseToken?.address || pair.tokenAddress || "";
               return (
                 <DexCard
-                  key={i}
+dark={darkMode}                   key={i}
                   pair={pair}
                   onClick={() => setSelected({ ...pair, address: addr })}
                   starButton={
@@ -637,7 +727,8 @@ export default function Home() {
           66%       { box-shadow: 0 0 8px rgba(123,47,190,0.8), 0 0 16px rgba(225,48,108,0.5), 0 0 24px rgba(29,161,242,0.3); }
         }
       `}</style>
-      {selected && <TokenModal token={selected} onClose={() => setSelected(null)} />}
+      {selected && <TokenModal token={selected} onClose={() => setSelected(null)} dark={darkMode} />}
+      {showAlerts && <AlertSettingsModal onClose={() => setShowAlerts(false)} dark={darkMode} />}
 
 
     </main>

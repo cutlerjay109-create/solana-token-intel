@@ -5,7 +5,19 @@ import DexCard from "./DexCard";
 
 type MemeFilter = "all" | "new" | "hot";
 
-export default function MemeTab({ onSelect, paused = false }: { onSelect: (p: any) => void; paused?: boolean }) {
+export default function MemeTab({ onSelect, paused = false, dark = false }: { onSelect: (p: any) => void; paused?: boolean; dark?: boolean }) {
+  const bg     = dark ? "#1e1e1c" : "#ffffff";
+  const bg2    = dark ? "#2a2a28" : "#F1EFE8";
+  const border = dark ? "#3a3a38" : "#D3D1C7";
+  const text   = dark ? "#e8e6df" : "#2c2c2a";
+  const text2  = dark ? "#9c9a92" : "#888780";
+  const text3  = dark ? "#6a6a68" : "#B4B2A9";
+  const blue   = dark ? "#5ba3e8" : "#185FA5";
+  const blueBg = dark ? "#0f2035" : "#E6F1FB";
+  const green  = dark ? "#7bc96f" : "#3B6D11";
+  const amber  = dark ? "#e8a44a" : "#854F0B";
+  const amberBg= dark ? "#2e2210" : "#FAEEDA";
+  const red    = dark ? "#f47c7c" : "#A32D2D";
   const [pairs, setPairs]         = useState<any[]>([]);
   const [filter, setFilter]       = useState<MemeFilter>("all");
   const [loading, setLoading]     = useState(true);
@@ -60,8 +72,7 @@ export default function MemeTab({ onSelect, paused = false }: { onSelect: (p: an
           ))}
         </div>
         <div style={{ fontSize: 13, color: "#888780" }}>
-          {total > 0 && <span>Showing <span style={{ fontWeight: 500, color: "#2c2c2a" }}>{pairs.length}</span> of {total} · </span>}
-          <span style={{ color: "#B4B2A9" }}>Refreshes in {countdown}s</span>
+          <span style={{ color: text3 }}>Refreshes in {countdown}s</span>
           {refreshing && <span style={{ marginLeft: 6, fontSize: 11, color: "#185FA5" }}>● updating</span>}
         </div>
       </div>
@@ -73,7 +84,7 @@ export default function MemeTab({ onSelect, paused = false }: { onSelect: (p: an
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 14 }}>
           {pairs.map((pair: any, i: number) => (
-            <DexCard key={i} pair={pair} onClick={() => onSelect({ ...pair, address: pair.baseToken?.address })} />
+            <DexCard dark={dark} key={i} pair={pair} onClick={() => onSelect({ ...pair, address: pair.baseToken?.address })} />
           ))}
         </div>
       )}
