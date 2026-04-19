@@ -141,7 +141,7 @@ export default function TokenModal({ token, onClose, dark = false }: { token: an
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)",
       display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: bg, borderRadius: 16, padding: "24px",
-        width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto",
+        width: "100%", maxWidth: 480, maxHeight: "92vh", overflowY: "auto",
         display: "flex", flexDirection: "column", gap: 16, border: `0.5px solid ${border}` }}>
 
         {/* Header */}

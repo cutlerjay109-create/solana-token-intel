@@ -143,8 +143,95 @@ html.dark a[style*="color: #185FA5"] { color: #5ba3e8 !important; }
   50%       { box-shadow: 0 0 8px rgba(225,48,108,0.8), 0 0 16px rgba(29,161,242,0.5); }
 }
 
-@media (max-width: 640px) {
-  div[style*="repeat(auto-fill, minmax(300px"] { grid-template-columns: 1fr !important; }
-  div[style*="repeat(auto-fill, minmax(320px"] { grid-template-columns: 1fr !important; }
-  footer[style*="grid-template-columns"]        { grid-template-columns: 1fr !important; }
+
+/* Mobile tab buttons — don't shrink */
+div[style*="overflowX: \"auto\""]::-webkit-scrollbar { display: none; }
+
+/* Mobile fixes */
+
+/* ── MOBILE LAYOUT ── */
+
+/* ===================== RESPONSIVE MOBILE ===================== */
+html, body { overflow-x: hidden; max-width: 100vw; }
+
+main {
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow-x: hidden;
+}
+
+/* Tabs — single row horizontal scroll */
+.tabs-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 6px !important;
+  padding-bottom: 6px !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.tabs-row::-webkit-scrollbar { display: none !important; }
+.tabs-row > button,
+.tabs-row > * {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 768px) {
+  /* Main padding tighter on mobile */
+  main { padding: 12px 10px !important; }
+
+  /* Cards always full width single column */
+  div[style*="minmax(300px"],
+  div[style*="minmax(320px"],
+  div[style*="minmax(280px"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Watchlist 3-col becomes 1-col */
+  div[style*="repeat(3, 1fr)"] { grid-template-columns: 1fr !important; }
+
+  /* Footer single col */
+  footer[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+
+  /* Stat cards: safe/caution/danger grid — keep 3 cols but smaller */
+  div[style*="gridTemplateColumns"][style*="1fr 1fr 1fr"] {
+    gap: 8px !important;
+  }
+
+  /* Token card stats grid — 3 cols compact */
+  div[style*="gridTemplateColumns:\"1fr 1fr 1fr\""] {
+    gap: 6px !important;
+  }
+
+  /* Banner shorter on mobile */
+  div[style*="height: 220"] { height: 130px !important; }
+  div[style*="height: 180"] { height: 120px !important; }
+
+  /* Prevent overflow on long table rows */
+  div[style*="gridTemplateColumns:\"2fr 1fr 1fr 1fr\""] {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  main { padding: 10px 8px !important; }
+}
+
+/* ===================== UNIVERSAL TABLE RESPONSIVE ===================== */
+/* Any grid with multi-column layout scrolls horizontally on mobile
+   to keep columns aligned with headers */
+@media (max-width: 768px) {
+  /* Smart money table */
+  div[style*="gridTemplateColumns: \"2fr 1fr 1fr 1fr 80px\""],
+  div[style*="gridTemplateColumns:\"2fr 1fr 1fr 1fr 1fr\""],
+  div[style*="gridTemplateColumns: \"2fr 1fr 1fr 1fr 1fr\""] {
+    min-width: 560px;
+  }
+
+  /* Table container scroll */
+  .table-scroll {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
 }

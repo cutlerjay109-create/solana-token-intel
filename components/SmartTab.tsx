@@ -60,6 +60,9 @@ export default function SmartTab({ pairs, onSelect, dark = false }: { pairs: any
         <div style={{ fontSize: 12, color: "#B4B2A9" }}>{periodNote[period]}</div>
       </div>
 
+      {/* Table — scroll on mobile */}
+      <div className="table-scroll">
+      <div style={{ minWidth: 560 }}>
       {/* Table header */}
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 80px", gap: 8, padding: "8px 12px",
         fontSize: 11, color: "#888780", fontWeight: 500, borderBottom: "0.5px solid #D3D1C7", marginBottom: 4 }}>
@@ -127,6 +130,8 @@ export default function SmartTab({ pairs, onSelect, dark = false }: { pairs: any
           </div>
         );
       })}
+      </div>
+      </div>
     </div>
   );
 }

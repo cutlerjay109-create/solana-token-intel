@@ -92,7 +92,7 @@ export default function TrendingDexTab({onSelect, dark=false}:{onSelect:(p:any)=
 
   return (
     <div>
-      <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+      <div className="tabs-row" style={{display:"flex",gap:6,marginBottom:12,overflowX:"auto",paddingBottom:4}}>
         {MODES.map(m=>(
           <button key={m.key} onClick={()=>handleMode(m.key)} style={{
             padding:"7px 18px",fontSize:13,cursor:"pointer",borderRadius:8,
@@ -129,7 +129,8 @@ export default function TrendingDexTab({onSelect, dark=false}:{onSelect:(p:any)=
           ))}
         </div>
       ):(
-        <div>
+        <div className="table-scroll">
+        <div style={{ minWidth: 560 }}>
           <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",gap:8,padding:"8px 12px",fontSize:11,color:text2,fontWeight:500,borderBottom:"0.5px solid #D3D1C7",marginBottom:4}}>
             <div>TOKEN</div>
             <div style={{textAlign:"right"}}>PRICE</div>
@@ -184,6 +185,7 @@ export default function TrendingDexTab({onSelect, dark=false}:{onSelect:(p:any)=
               </div>
             );
           })}
+        </div>
         </div>
       )}
     </div>

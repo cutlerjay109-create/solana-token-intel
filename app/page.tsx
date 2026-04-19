@@ -368,13 +368,13 @@ export default function Home() {
     <div style={{ width: "100%", height: "clamp(120px, 25vw, 220px)", overflow: "hidden" }}>
       <img src="/banner.jpeg" alt="banner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center center", display: "block" }} />
     </div>
-    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "16px 12px", fontFamily: "-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif" }}>
+    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "12px 10px", fontFamily: "-apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif" }}>
 
       {/* Header */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "center",
         marginBottom: 16, paddingBottom: 16, borderBottom: "0.5px solid #D3D1C7",
-        flexWrap: "wrap", gap: 10,
+        flexWrap: "wrap", gap: 8,
       }}>
         {/* Left — brand */}
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -489,7 +489,7 @@ export default function Home() {
             {tab === "whale" && totalTxns > 0 && <span style={{ marginLeft: 8 }}>· <span style={{ fontWeight: 500 }}>{totalTxns.toLocaleString()}</span> whale txs · Total: <span style={{ fontWeight: 500 }}>{fmt(totalVolume)}</span></span>}
             {tabUpdated[tab] && <span style={{ marginLeft: 8, fontSize: 11, color: darkMode ? "#6a6a68" : "#B4B2A9" }}>· updated {tabUpdated[tab]!.toLocaleTimeString()}</span>}
           </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
             {/* Whale / DeFi filter */}
             {(tab === "whale" || tab === "defi") && (
               <div style={{ display: "flex", border: "0.5px solid #D3D1C7", borderRadius: 8, overflow: "hidden" }}>
@@ -582,7 +582,7 @@ dark={darkMode}                   key={i}
       ) : isBirdeye ? (
         <div>
           {/* Trending sub-tabs */}
-          <div style={{ display: "flex", gap: 6, marginBottom: 20, borderBottom: "0.5px solid #D3D1C7", paddingBottom: 12 }}>
+          <div className="tabs-row" style={{ display: "flex", gap: 6, marginBottom: 20, borderBottom: "0.5px solid #D3D1C7", paddingBottom: 12, overflowX: "auto" }}>
             <button onClick={() => setTrendView("birdeye")} style={{
               padding: "6px 16px", fontSize: 13, cursor: "pointer", borderRadius: 8,
               border: trendView === "birdeye" ? "2px solid #185FA5" : "0.5px solid #D3D1C7",

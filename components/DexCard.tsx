@@ -149,7 +149,7 @@ export default function DexCard({pair,onClick,starButton,dark=false}:{pair:DexPa
       </div>
 
       {/* Price + volume */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:8}}>
         <div style={{fontSize:17,fontWeight:500,color:text}}>{fmtPrice(pair.priceUsd)}</div>
         <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}>
           {volDisplay>100&&<span style={{fontSize:13,fontWeight:500,color:isBuy?green:red}}>{isBuy?"+":"-"}{fmt(volDisplay)}</span>}
